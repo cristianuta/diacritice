@@ -1,0 +1,2 @@
+# fastdiacritics
+Diacritics add software
