@@ -11,10 +11,10 @@
         <relativePath/>
     </parent>
 
-    <groupId>ro.fastdiacritics</groupId>
-    <artifactId>fastdiacritics</artifactId>
+    <groupId>ro.diacritice</groupId>
+    <artifactId>diacritice</artifactId>
     <version>0.1.0-SNAPSHOT</version>
-    <name>fastdiacritics</name>
+    <name>Diacritice</name>
     <description>Aplicație web care adaugă diacriticele românești unui text</description>
 
     <properties>

@@ -1,4 +1,4 @@
-package ro.fastdiacritics;
+package ro.diacritice;
 
 import java.io.BufferedReader;
 import java.io.IOException;

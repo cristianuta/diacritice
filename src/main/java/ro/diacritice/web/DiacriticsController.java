@@ -1,4 +1,4 @@
-package ro.fastdiacritics.web;
+package ro.diacritice.web;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ro.fastdiacritics.DiacriticsRestorer;
+import ro.diacritice.DiacriticsRestorer;
 
 /**
  * API REST: {@code POST /api/diacritice} cu {@code {"text": "..."}}

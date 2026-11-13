@@ -1,4 +1,4 @@
-# fastdiacritics
+# Diacritice
 
 Aplicație web Spring Boot care adaugă diacriticele românești (ă, â, î, ș, ț) unui text scris fără ele.
 Lipești textul într-un câmp, apeși **„Adaugă diacritice”** și primești textul corectat.
@@ -15,17 +15,17 @@ Stack: Java 25, Spring Boot 4.1, Maven (prin Maven Wrapper — nu trebuie instal
 ```powershell
 .\mvnw.cmd spring-boot:run        # http://localhost:8080
 .\mvnw.cmd test                   # teste
-.\mvnw.cmd package                # target/fastdiacritics-*.jar
-java -jar target\fastdiacritics-0.1.0-SNAPSHOT.jar --server.port=9000
+.\mvnw.cmd package                # target/diacritice-*.jar
+java -jar target\diacritice-0.1.0-SNAPSHOT.jar --server.port=9000
 ```
 
-Din IntelliJ: deschide `pom.xml` ca proiect Maven și rulează `FastDiacriticsApplication`.
+Din IntelliJ: deschide `pom.xml` ca proiect Maven și rulează `DiacriticeApplication`.
 
 ## Structură
 
 ```
-src/main/java/ro/fastdiacritics/
-  FastDiacriticsApplication.java   aplicația Spring Boot + bean-ul DiacriticsRestorer
+src/main/java/ro/diacritice/
+  DiacriticeApplication.java       aplicația Spring Boot + bean-ul DiacriticsRestorer
   DiacriticsRestorer.java          motorul (Java pur, fără dependențe de Spring)
   web/DiacriticsController.java    API REST
 src/main/resources/

@@ -1,5 +1,5 @@
 """
-Generează dicționarul complet FastDiacritics.
+Generează dicționarul complet al aplicației Diacritice.
 
 Surse:
   * Hunspell ro_RO (LibreOffice/dictionaries, licență GPL/LGPL/MPL) – toate formele flexionare valide;

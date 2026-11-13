@@ -1,4 +1,4 @@
-package ro.fastdiacritics.web;
+package ro.diacritice.web;
 
 import java.nio.charset.StandardCharsets;
 
