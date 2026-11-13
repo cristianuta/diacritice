@@ -1,0 +1,9 @@
+# Suprascrieri manuale – au prioritate față de dicționarul complet (ro.txt.gz).
+#
+# Scrie cuvintele CORECT, cu diacritice, separate prin spații sau linii noi.
+# Cheia este cuvântul fără diacritice: „pește” înseamnă că „peste” va deveni mereu „pește”.
+# Pentru a forța un cuvânt să rămână FĂRĂ diacritice, scrie-l fără ele (ex. „mama”).
+#
+# Cuvintele ambigue care depind de context (ca/că, fata/fața/față, doua/două)
+# sunt tratate în DiacriticsRestorer#contextual.
+

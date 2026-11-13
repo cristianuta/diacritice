@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FastDiacritics – adaugă diacritice</title>
+    <style>
+        :root {
+            --accent: #1f5fbf;
+            --accent-dark: #174a96;
+            --bg: #f4f6fa;
+            --card: #ffffff;
+            --text: #1d2330;
+            --muted: #5b6475;
+            --border: #d5dae3;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --accent: #5b9bff;
+                --accent-dark: #3d7fe6;
+                --bg: #14171d;
+                --card: #1d2129;
+                --text: #e6e9ef;
+                --muted: #9aa3b2;
+                --border: #343a46;
+            }
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+        main {
+            max-width: 820px;
+            margin: 48px auto;
+            padding: 0 16px;
+        }
+        h1 { margin: 0 0 4px; font-size: 1.8rem; }
+        p.subtitle { margin: 0 0 24px; color: var(--muted); }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        label { display: block; font-weight: 600; margin-bottom: 8px; }
+        textarea {
+            width: 100%;
+            min-height: 240px;
+            padding: 12px;
+            font: inherit;
+            font-size: 1.05rem;
+            line-height: 1.5;
+            color: var(--text);
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            resize: vertical;
+        }
+        textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            margin-top: 14px;
+        }
+        button {
+            font: inherit;
+            padding: 10px 18px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            color: var(--text);
+            cursor: pointer;
+        }
+        button.primary {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+            font-weight: 600;
+        }
+        button.primary:hover { background: var(--accent-dark); }
+        button:disabled { opacity: .6; cursor: progress; }
+        #status { color: var(--muted); font-size: .95rem; margin-left: auto; }
+        kbd {
+            font-size: .8rem;
+            padding: 1px 5px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+<main>
+    <h1>FastDiacritics</h1>
+    <p class="subtitle">Lipește un text scris fără diacritice și apasă butonul. Poți folosi și <kbd>Ctrl</kbd> + <kbd>Enter</kbd>.</p>
+
+    <div class="card">
+        <label for="text">Text</label>
+        <textarea id="text" placeholder="Ex.: Buna ziua! Astazi mergem in oras sa cumparam paine si branza." autofocus></textarea>
+
+        <div class="actions">
+            <button id="restore" class="primary" type="button">Adaugă diacritice</button>
+            <button id="copy" type="button">Copiază</button>
+            <button id="undo" type="button" hidden>Anulează</button>
+            <button id="clear" type="button">Șterge</button>
+            <span id="status" role="status" aria-live="polite"></span>
+        </div>
+    </div>
+</main>
+
+<script>
+    const textarea = document.getElementById("text");
+    const restoreBtn = document.getElementById("restore");
+    const copyBtn = document.getElementById("copy");
+    const undoBtn = document.getElementById("undo");
+    const clearBtn = document.getElementById("clear");
+    const status = document.getElementById("status");
+    let previousText = null;
+
+    async function addDiacritics() {
+        const text = textarea.value;
+        if (!text.trim()) {
+            status.textContent = "Introdu mai întâi un text.";
+            return;
+        }
+        restoreBtn.disabled = true;
+        status.textContent = "Se procesează…";
+        try {
+            const response = await fetch("/api/diacritice", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text })
+            });
+            if (!response.ok) {
+                const problem = await response.json().catch(() => ({}));
+                throw new Error(problem.detail || `HTTP ${response.status}`);
+            }
+            const result = await response.json();
+            previousText = text;
+            textarea.value = result.text;
+            undoBtn.hidden = false;
+            status.textContent = result.modificari === 1
+                ? "1 cuvânt modificat."
+                : `${result.modificari} cuvinte modificate.`;
+        } catch (err) {
+            status.textContent = "Eroare: " + err.message;
+        } finally {
+            restoreBtn.disabled = false;
+        }
+    }
+
+    restoreBtn.addEventListener("click", addDiacritics);
+
+    textarea.addEventListener("keydown", e => {
+        if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+            e.preventDefault();
+            addDiacritics();
+        }
+    });
+
+    copyBtn.addEventListener("click", async () => {
+        try {
+            await navigator.clipboard.writeText(textarea.value);
+            status.textContent = "Text copiat.";
+        } catch {
+            textarea.select();
+            status.textContent = "Selectat – apasă Ctrl+C.";
+        }
+    });
+
+    undoBtn.addEventListener("click", () => {
+        if (previousText !== null) {
+            textarea.value = previousText;
+            previousText = null;
+            undoBtn.hidden = true;
+            status.textContent = "Modificările au fost anulate.";
+        }
+    });
+
+    clearBtn.addEventListener("click", () => {
+        textarea.value = "";
+        previousText = null;
+        undoBtn.hidden = true;
+        status.textContent = "";
+        textarea.focus();
+    });
+</script>
+</body>
+</html>
